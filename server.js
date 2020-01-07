@@ -26,7 +26,7 @@ const getLocationData = async ({ latitude, longitude }) => {
 
 const getLastDoc = async (collection) => {
     const [lastDoc = null] = await collection.find().sort({ date: -1 }).limit(1).toArray();
-    return lastDoc;
+    return lastDoc ? lastDoc : { city: null, country: null };
 };
 
 const app = express();
@@ -48,7 +48,7 @@ mongoClient.connect((err, client) => {
         const { city, country } = await getLocationData(msg.location);
 
         const lastLocation = await getLastDoc(location);
-        if (lastLocation && lastLocation.city === city && lastLocation.country === country) {
+        if (lastLocation.city === city && lastLocation.country === country) {
             bot.sendMessage(uid, 'Your location wasn\'t changed');
             return;
         }
