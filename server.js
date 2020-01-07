@@ -1,6 +1,7 @@
 const https = require('https');
 const express = require('express');
 const fetch = require('node-fetch');
+const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -29,6 +30,7 @@ const getLastDoc = async (collection) => {
 };
 
 const app = express();
+app.use(bodyParser.json());
 const botUrl = `/bot${TELEGRAM_BOT_TOKEN}`;
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { onlyFirstMatch: true, polling: !DYNO });
 const mongoClient = new MongoClient(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
