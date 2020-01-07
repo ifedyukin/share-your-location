@@ -1,0 +1,25 @@
+{
+  "name": "share-your-location",
+  "version": "1.0.0",
+  "description": "Simple Telegram bot and service that allow share your location",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ifedyukin/share-your-location.git"
+  },
+  "author": "Igor Fedyukin <me@ifedyukin.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ifedyukin/share-your-location/issues"
+  },
+  "homepage": "https://github.com/ifedyukin/share-your-location#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.4.1",
+    "node-fetch": "^2.6.0",
+    "node-telegram-bot-api": "^0.40.0"
+  }
+}
