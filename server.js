@@ -11,6 +11,7 @@ const {
     PORT = 8000,
     MONGODB_URI,
     WEBHOOK_URI,
+    WRITE_TOKEN,
     MONGODB_NAME,
     TELEGRAM_USER_ID,
     TELEGRAM_BOT_HOOK,
@@ -84,6 +85,31 @@ mongoClient.connect((err, client) => {
     });
 
     app.get('/location', async (req, res) => res.send(await getLastDoc(location)));
+
+    app.get('/set-location', async (req, res) => {
+        if (req.query.token !== WRITE_TOKEN) return res.sendStatus(403);
+        const { city, country } = await getLocationData(req.query);
+
+        const lastLocation = await getLastDoc(location);
+        if (lastLocation.city === city && lastLocation.country === country) {
+            res.send('Your location wasn\'t changed');
+            console.log('[API] Your location wasn\'t changed');
+            return;
+        }
+
+        try {
+            await location.insertOne({ country, city, date: new Date() });
+            res.send(`Location successfully updated - "${country}, ${city}"`);
+            console.log(`[API] Location successfully updated - "${country}, ${city}"`);
+            if (WEBHOOK_URI) {
+                await fetch(WEBHOOK_URI, { method: 'POST' });
+                console.log('[API] Webhook called');
+            }
+        } catch (err) {
+            res.send('[API] Hm... Something went wrong');
+            console.log(err);
+        }
+    });
 
     app.listen(PORT, () => {
         console.log(`Express server is listening on ${PORT}`);
