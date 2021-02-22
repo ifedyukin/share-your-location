@@ -21,6 +21,7 @@
     "express": "^4.17.1",
     "mongodb": "^3.4.1",
     "node-fetch": "^2.6.0",
-    "node-telegram-bot-api": "^0.40.0"
+    "node-telegram-bot-api": "^0.40.0",
+    "transliteration": "^2.2.0"
   }
 }

@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 const TelegramBot = require('node-telegram-bot-api');
+const { transliterate } = require('transliteration');
 
 const {
     OCG_TOKEN,
@@ -22,7 +23,7 @@ const getLocationData = async ({ latitude, longitude }) => {
     const res = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${OCG_TOKEN}`);
     const { results } = await res.json();
     const { city, town, country } = results[0].components;
-    return { city: city || town || '', country };
+    return { city: transliterate(city || town || ''), transliterate(country) };
 };
 
 const getLastDoc = async (collection) => {
