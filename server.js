@@ -23,7 +23,11 @@ const getLocationData = async ({ latitude, longitude }) => {
     const res = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${OCG_TOKEN}`);
     const { results } = await res.json();
     const { city, town, country } = results[0].components;
-    return { city: transliterate(city || town || ''), transliterate(country) };
+    const point = city || town || '';
+
+    if (!point || !country) return {};
+
+    return { city: transliterate(point), transliterate(country) };
 };
 
 const getLastDoc = async (collection) => {
@@ -48,6 +52,8 @@ mongoClient.connect((err, client) => {
         const { chat: { id: uid } } = msg;
         if (`${uid}` !== TELEGRAM_USER_ID) return;
         const { city, country } = await getLocationData(msg.location);
+
+        if (!city || !country) return console.error('Empty data...');
 
         const lastLocation = await getLastDoc(location);
         if (lastLocation.city === city && lastLocation.country === country) {
@@ -90,6 +96,8 @@ mongoClient.connect((err, client) => {
     app.get('/set-location', async (req, res) => {
         if (req.query.token !== WRITE_TOKEN) return res.sendStatus(403);
         const { city, country } = await getLocationData(req.query);
+
+        if (!city || !country) return console.error('Empty data...');
 
         const lastLocation = await getLastDoc(location);
         if (lastLocation.city === city && lastLocation.country === country) {
