@@ -27,7 +27,7 @@ const getLocationData = async ({ latitude, longitude }) => {
 
     if (!point || !country) return {};
 
-    return { city: transliterate(point), transliterate(country) };
+    return { city: transliterate(point), country: transliterate(country) };
 };
 
 const getLastDoc = async (collection) => {
